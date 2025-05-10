@@ -1,2 +1,1 @@
-# nodejs-mysql-connection
-Подключаем MySQL к NodeJS
+# Подключаем MySQL к NodeJS

@@ -1,0 +1,24 @@
+{
+    "name": "nodejs-mysql-connection",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DanyaBooba/nodejs-mysql-connection.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/DanyaBooba/nodejs-mysql-connection/issues"
+    },
+    "homepage": "https://github.com/DanyaBooba/nodejs-mysql-connection#readme",
+    "dependencies": {
+        "express": "^5.1.0"
+    }
+}
