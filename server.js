@@ -38,7 +38,7 @@ async function createUser(firstName, lastName, username) {
     }
 }
 
-async function updateUser(id, newData) {
+async function updateUserFull(id, newData) {
     try {
         const { firstName, lastName, username } = newData;
         const [result] = await pool.query(
@@ -57,8 +57,27 @@ async function updateUser(id, newData) {
     }
 }
 
-// Пример вызова
-// await updateUser(1, { name: 'Alice Updated', email: 'alice_new@example.com', age: 26 });
+async function updateUser(id, newData) {
+    try {
+        const fields = Object.keys(newData).map(key => `${key} = ?`).join(', ');
+        const values = Object.values(newData);
+        values.push(id);
+
+        const [result] = await pool.query(
+            `UPDATE users SET ${fields} WHERE id = ?`,
+            values
+        );
+
+        if (result.affectedRows === 0) {
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Ошибка при обновлении:', error.message);
+        throw error;
+    }
+}
 
 async function deleteUser(id) {
     try {
@@ -74,9 +93,6 @@ async function deleteUser(id) {
         throw error
     }
 }
-
-// Пример вызова
-// await deleteUser(1);
 
 // Создание GET маршрутов
 
@@ -114,22 +130,22 @@ app.post('/users', async (req, res) => {
     }
 })
 
-// app.patch('/users/:id', async (req, res) => {
-//     try {
-//         const userId = req.params.id
-//         const { firstName, lastName, username } = req.body;
-//         const userIdAfterUpdate = await createUser(firstName, lastName, username);
-//         res.status(201).json({ id: userId });
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// })
+app.patch('/users/:id', async (req, res) => {
+    try {
+        const userId = req.params.id
+        const userData = req.body
+        const statusUpdate = await updateUser(userId, userData);
+        res.status(201).json({ status: statusUpdate });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+})
 
 app.put('/users/:id', async (req, res) => {
     try {
         const userId = req.params.id
         const { firstName, lastName, username } = req.body
-        const statusUpdate = await updateUser(userId, { firstName, lastName, username });
+        const statusUpdate = await updateUserFull(userId, { firstName, lastName, username });
         res.status(201).json({ status: statusUpdate });
     } catch (error) {
         res.status(400).json({ error: error.message });
